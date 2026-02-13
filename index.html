@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elite Kit Designer - Auto Patterns</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;700;900&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: #e2e8f0;
+        margin: 0;
+        overflow: hidden;
+      }
+      .jersey-text {
+        font-family: "Oswald", sans-serif;
+        pointer-events: none;
+      }
+
+      /* 프리뷰 배경 */
+      .preview-container {
+        position: relative;
+        background: radial-gradient(circle, #f8fafc 0%, #cbd5e1 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .grid-overlay {
+        position: absolute;
+        width: 1500px;
+        height: 1500px;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      .control-panel {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-left: 1px solid #cbd5e1;
+        overflow-y: auto;
+      }
+
+      .slider-group {
+        background: white;
+        border-radius: 12px;
+        padding: 12px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 10px;
+      }
+
+      label {
+        font-size: 10px;
+        font-weight: 700;
+        color: #475569;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 3px;
+      }
+
+      input[type="range"] {
+        accent-color: #2563eb;
+        width: 100%;
+        cursor: pointer;
+      }
+
+      /* 썸네일 그리드 */
+      .thumb-grid {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 15px;
+      }
+      .thumb-item {
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: 0.2s;
+        background: white;
+        height: 80px;
+        position: relative;
+      }
+      .thumb-item:hover {
+        border-color: #94a3b8;
+        transform: translateY(-2px);
+      }
+      .thumb-item.active {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px #2563eb, 0 4px 6px rgba(37, 99, 235, 0.2);
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+      }
+      .thumb-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background-color: #f0f0f0;
+      }
+    </style>
+  </head>
+  <body class="flex h-screen">
+    <div id="capture-area" class="preview-container flex-grow relative">
+      <div class="grid-overlay"></div>
+      <div class="flex items-center justify-center gap-4 z-10" style="transform: scale(1.35);">
+        <div class="flex flex-col items-center">
+          <div class="w-[480px] h-[730px] flex items-center">
+            <svg
+              id="front-svg"
+              viewBox="0 0 1560.42 1601.41"
+              xmlns="http://www.w3.org/2000/svg"
+              style="filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15))"
+            >
+              <defs>
+                <pattern
+                  id="ptn-front"
+                  patternUnits="userSpaceOnUse"
+                  width="600"
+                  height="600"
+                  x="0"
+                  y="0"
+                >
+                  <image
+                    id="img-front"
+                    href=""
+                    x="0"
+                    y="0"
+                    width="600"
+                    height="600"
+                    preserveAspectRatio="xMidYMid slice"
+                  />
+                </pattern>
+              </defs>
+              <path
+                class="jsy-base"
+                d="M780.34,1262.86h341.99v-606.16c-34.76-5.2-74.41-40.55-75.45-90.46s27.03-173.63,27.03-173.63l-189.23-54.07c-18.7,110.38-104.34,106.09-104.34,106.09h-.27s-85.64,4.29-104.34-106.09l-189.23,54.07s28.07,123.73,27.03,173.63c-1.04,49.91-40.69,85.26-75.45,90.46v606.16h341.99"
+                fill="#222"
+              />
+              <path
+                id="front-ptn-layer"
+                fill="url(#ptn-front)"
+                opacity="0.7"
+                d=""
+                style="mix-blend-mode: multiply"
+              />
+            </svg>
+          </div>
+          <span
+            class="mt-6 font-black text-slate-500 italic uppercase tracking-[0.2em] text-center block w-full"
+            >Front View</span
+          >
+        </div>
+
+        <div class="flex flex-col items-center ml-[-10]">
+          <div class="w-[480px] h-[730px] flex items-center">
+            <svg
+              id="back-svg"
+              viewBox="0 0 1560.42 1601.41"
+              xmlns="http://www.w3.org/2000/svg"
+              style="filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15))"
+            >
+              <defs>
+                <pattern
+                  id="ptn-back"
+                  patternUnits="userSpaceOnUse"
+                  width="1602"
+                  height="1602"
+                  x="0"
+                  y="0"
+                >
+                  <image
+                    id="img-back"
+                    href=""
+                    x="0"
+                    y="0"
+                    width="1602"
+                    height="1602"
+                    preserveAspectRatio="xMidYMid slice"
+                  />
+                </pattern>
+              </defs>
+              <path
+                class="jsy-base"
+                d="M1048.24,567.85c-4.72-41.73,22.03-176.77,22.03-176.77l-185.63-52.87c-10.18,14.1-25.06,20.36-36.81,24.67-11.75,4.31-67.61,6.66-67.61,6.66,0,0-55.86-2.35-67.61-6.66-11.75-4.31-26.63-10.57-36.81-24.67l-185.63,52.87s26.75,135.04,22.03,176.77c-4.72,41.73-19.1,73.48-71.24,89.17v606.19h678.54v-606.19c-52.14-15.7-66.52-47.44-71.24-89.17Z"
+                fill="#222"
+              />
+              <path
+                id="back-ptn-layer"
+                fill="url(#ptn-back)"
+                opacity="0.7"
+                d=""
+                style="mix-blend-mode: multiply"
+              />
+            </svg>
+          </div>
+          <span
+            class="mt-6 font-black text-slate-500 italic uppercase tracking-[0.2em] text-center block w-full"
+            >Back View</span
+          >
+                    </div>
+                  </div>
+              
+                  <div      class="control-panel w-[380px] p-6 flex flex-col gap-6 shadow-2xl z-20"
+    >
+      <header class="flex justify-between items-center border-b pb-4">
+        <h2 class="text-xl font-black italic text-slate-900 tracking-tighter">
+          KIT DESIGNER PRO
+        </h2>
+        <button
+          onclick="saveImage()"
+          class="bg-blue-600 text-white text-[10px] px-5 py-2 rounded-full font-bold uppercase hover:bg-blue-700 shadow-lg"
+        >
+          Save Image
+        </button>
+      </header>
+
+      <div>
+        <label class="mb-3 text-xs tracking-widest text-slate-500"
+          >SELECT PATTERN</label
+        >
+        <div class="thumb-grid grid-cols-3" id="pattern-gallery"></div>
+
+        <label class="mt-4 text-xs tracking-widest text-slate-500"
+          >OR UPLOAD YOUR OWN</label
+        >
+        <input
+          type="file"
+          id="custom-upload"
+          accept="image/*"
+          onchange="handleFileUpload(this)"
+          class="block w-full text-[10px] text-slate-500 file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+        />
+      </div>
+
+      <div class="space-y-1">
+        <label class="text-xs tracking-widest">BASE JERSEY COLOR</label>
+        <input
+          type="color"
+          id="base-color"
+          value="#222222"
+          oninput="updateAll()"
+          class="w-full h-12 rounded-lg cursor-pointer border-2 border-slate-100"
+        />
+      </div>
+
+      <div class="space-y-1">
+        <label class="text-xs tracking-widest">COLLAR COLOR</label>
+        <input
+          type="color"
+          id="collar-color"
+          value="#FF0000"
+          oninput="updateAll()"
+          class="w-full h-12 rounded-lg cursor-pointer border-2 border-slate-100"
+        />
+      </div>
+
+      <div class="space-y-1">
+        <label class="text-xs tracking-widest">ARM COLOR</label>
+        <input
+          type="color"
+          id="arm-color"
+          value="#FF0000"
+          oninput="updateAll()"
+          class="w-full h-12 rounded-lg cursor-pointer border-2 border-slate-100"
+        />
+      </div>
+
+      <div class="border-t pt-4">
+        <span
+          class="text-[10px] font-black text-blue-600 italic uppercase mb-2 block"
+          >FRONT CONTROLS</span
+        >
+        <div class="slider-group">
+          <label>Opacity <span id="val-op-f">70%</span></label
+          ><input
+            type="range"
+            id="op-f"
+            min="0"
+            max="1"
+            step="0.05"
+            value="0.7"
+            oninput="updateAll()"
+          />
+          <label class="mt-3">Scale <span id="val-sc-f">600px</span></label
+          ><input
+            type="range"
+            id="sc-f"
+            min="50"
+            max="1500"
+            value="600"
+            oninput="updateAll()"
+          />
+          <label class="mt-3">Move X <span id="val-x-f">0</span></label
+          ><input
+            type="range"
+            id="x-f"
+            min="-1000"
+            max="1000"
+            value="0"
+            oninput="updateAll()"
+          />
+        </div>
+      </div>
+
+      <div class="border-t pt-4">
+        <span
+          class="text-[10px] font-black text-emerald-600 italic uppercase mb-2 block"
+          >BACK CONTROLS</span
+        >
+        <div class="slider-group">
+          <label>Opacity <span id="val-op-b">70%</span></label
+          ><input
+            type="range"
+            id="op-b"
+            min="0"
+            max="1"
+            step="0.05"
+            value="0.7"
+            oninput="updateAll()"
+          />
+          <label class="mt-3">Scale <span id="val-sc-b">1602px</span></label
+          ><input
+            type="range"
+            id="sc-b"
+            min="150"
+            max="4000"
+            value="1602"
+            oninput="updateAll()"
+          />
+          <label class="mt-3">Move X <span id="val-x-b">0</span></label
+          ><input
+            type="range"
+            id="x-b"
+            min="-2000"
+            max="2000"
+            value="0"
+            oninput="updateAll()"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ★ 핵심: 사용자님의 이미지를 제가 'SVG 코드'로 변환해서 넣었습니다.
+      // 이제 파일 경로 상관없이 무조건 나옵니다.
+      const patterns = [
+        {
+          id: "p1",
+          name: "Pattern 1",
+          url: "TSHIRT_001.png",
+        },
+        {
+          id: "p2",
+          name: "Pattern 2",
+          url: "TSHIRT_002.png",
+        },
+        {
+          id: "p3",
+          name: "Pattern 3",
+          url: "TSHIRT_003.png",
+        },
+        {
+          id: "p4",
+          name: "img-001",
+          url: "img-001.jpg",
+        },
+        {
+          id: "p5",
+          name: "img-002",
+          url: "img-002.jpg",
+        },
+        {
+          id: "p6",
+          name: "img-003",
+          url: "img-003.jpg",
+        },
+        {
+          id: "p7",
+          name: "img-004",
+          url: "img-004.jpg",
+        },
+        {
+          id: "p8",
+          name: "img-005",
+          url: "img-005.jpg",
+        },
+        {
+          id: "p9",
+          name: "img-006",
+          url: "img-006.jpg",
+        },
+        {
+          id: "p10",
+          name: "img-007",
+          url: "img-007.jpg",
+        },
+        {
+          id: "p11",
+          name: "img-008",
+          url: "img-008.jpg",
+        },
+        {
+          id: "p12",
+          name: "img-009",
+          url: "img-009.jpg",
+        },
+        {
+          id: "p13",
+          name: "img-010",
+          url: "img-010.jpg",
+        },
+        {
+          id: "p14",
+          name: "img-011",
+          url: "img-011.jpg",
+        },
+      ];
+
+      // 갤러리 생성
+      const gallery = document.getElementById("pattern-gallery");
+      patterns.forEach((p, index) => {
+        const div = document.createElement("div");
+        div.className = `thumb-item ${index === 0 ? "active" : ""}`;
+
+        const img = document.createElement("img");
+        img.src = p.url; // 내장된 코드 사용
+
+        div.appendChild(img);
+        div.onclick = () => selectPattern(p.url, div);
+        gallery.appendChild(div);
+      });
+
+      // 파일 업로드 처리 함수 (만약 직접 파일을 쓰고 싶을 때)
+      function handleFileUpload(input) {
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            // 모든 썸네일 선택 해제
+            document
+              .querySelectorAll(".thumb-item")
+              .forEach((t) => t.classList.remove("active"));
+            // 업로드한 이미지 적용
+            document
+              .getElementById("img-front")
+              .setAttribute("href", e.target.result);
+            document
+              .getElementById("img-back")
+              .setAttribute("href", e.target.result);
+            updateAll();
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      // 초기 실행
+      window.onload = () => {
+        const fD = document
+          .querySelector("#front-svg .jsy-base")
+          .getAttribute("d");
+        const bD = document
+          .querySelector("#back-svg .jsy-base")
+          .getAttribute("d");
+        document.getElementById("front-ptn-layer").setAttribute("d", fD);
+        document.getElementById("back-ptn-layer").setAttribute("d", bD);
+        selectPattern(patterns[0].url, gallery.children[0]);
+      };
+
+      function selectPattern(url, element) {
+        document
+          .querySelectorAll(".thumb-item")
+          .forEach((t) => t.classList.remove("active"));
+        if (element) element.classList.add("active");
+
+        document.getElementById("img-front").setAttribute("href", url);
+        document.getElementById("img-back").setAttribute("href", url);
+        updateAll();
+      }
+
+      function updateAll() {
+        const color = document.getElementById("base-color").value;
+        document
+          .querySelectorAll(".jsy-base")
+          .forEach((p) => p.setAttribute("fill", color));
+
+        const collarColor = document.getElementById("collar-color").value;
+        document
+          .querySelectorAll(".jsy-collar")
+          .forEach((p) => p.setAttribute("fill", collarColor));
+
+        const armColor = document.getElementById("arm-color").value;
+        document
+          .querySelectorAll(".jsy-arm")
+          .forEach((p) => p.setAttribute("fill", armColor));
+
+        ["f", "b"].forEach((s) => {
+          const side = s === "f" ? "front" : "back";
+          const op = document.getElementById(`op-${s}`).value;
+          const sc = document.getElementById(`sc-${s}`).value;
+          const x = document.getElementById(`x-${s}`).value;
+
+          document
+            .getElementById(`${side}-ptn-layer`)
+            .setAttribute("opacity", op);
+          const ptn = document.getElementById(`ptn-${side}`);
+          const img = document.getElementById(`img-${side}`);
+
+          ptn.setAttribute("width", sc);
+          ptn.setAttribute("height", sc);
+          ptn.setAttribute("x", x);
+          img.setAttribute("width", sc);
+          img.setAttribute("height", sc);
+
+          document.getElementById(`val-op-${s}`).textContent =
+            Math.round(op * 100) + "%";
+          document.getElementById(`val-sc-${s}`).textContent = sc + "px";
+          document.getElementById(`val-x-${s}`).textContent = x;
+        });
+      }
+
+      async function saveImage() {
+        try {
+          const area = document.getElementById("capture-area");
+          const canvas = await html2canvas(area, {
+            scale: 2,
+            backgroundColor: "#ffffff",
+          });
+          const link = document.createElement("a");
+          link.download = "kit-design.png";
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+        } catch (error) {
+          console.error("Oops, something went wrong!", error);
+          alert(
+            "Sorry, the image could not be saved. Please check the console for errors."
+          );
+        }
+      }
+    </script>
+  </body>
+</html>
