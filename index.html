@@ -29,6 +29,9 @@
         justify-content: center;
         overflow: hidden;
       }
+      .preview-stage {
+        transform-origin: center center;
+      }
       .grid-overlay {
         position: absolute;
         width: 1500px;
@@ -41,7 +44,10 @@
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
         border-left: 1px solid #cbd5e1;
-        overflow-y: auto;
+        overflow: hidden;
+      }
+      .control-content {
+        transform-origin: top left;
       }
 
       .slider-group {
@@ -100,12 +106,12 @@
       }
     </style>
   </head>
-  <body class="flex h-screen">
-    <div id="capture-area" class="preview-container flex-grow relative">
+  <body class="flex h-screen w-screen overflow-hidden">
+    <div id="capture-area" class="preview-container flex-grow min-w-0 min-h-0 relative">
       <div class="grid-overlay"></div>
-      <div class="flex items-center justify-center gap-0 z-10" style="transform: scale(1.35);">
+      <div id="preview-stage" class="preview-stage flex items-center justify-center gap-1 z-10">
         <div class="flex flex-col items-center">
-          <div class="w-[600px] h-[730px] flex items-center">
+          <div class="w-[560px] h-[690px] flex items-center">
             <svg
               id="front-svg"
               viewBox="0 0 1560.42 1601.41"
@@ -152,8 +158,8 @@
           >
         </div>
 
-        <div class="flex flex-col items-center ml-[-10]">
-          <div class="w-[600px] h-[730px] flex items-center">
+        <div class="flex flex-col items-center ml-[-60px]">
+          <div class="w-[560px] h-[690px] flex items-center">
             <svg
               id="back-svg"
               viewBox="0 0 1560.42 1601.41"
@@ -201,8 +207,8 @@
                     </div>
                   </div>
               
-                  <div      class="control-panel w-[380px] p-6 flex flex-col gap-6 shadow-2xl z-20"
-    >
+                  <div      class="control-panel w-[min(480px,36vw)] h-screen shrink-0 shadow-2xl z-20">
+      <div id="control-content" class="control-content p-5 flex flex-col gap-5">
       <header class="flex justify-between items-center border-b pb-4">
         <h2 class="text-xl font-black italic text-slate-900 tracking-tighter">
           KIT DESIGNER PRO
@@ -339,6 +345,7 @@
           />
         </div>
       </div>
+      </div>
     </div>
 
     <script>
@@ -464,7 +471,52 @@
         document.getElementById("front-ptn-layer").setAttribute("d", fD);
         document.getElementById("back-ptn-layer").setAttribute("d", bD);
         selectPattern(patterns[0].url, gallery.children[0]);
+        adjustPreviewScale();
+        adjustControlScale();
+        requestAnimationFrame(() => {
+          adjustPreviewScale();
+          adjustControlScale();
+        });
       };
+
+      function adjustPreviewScale() {
+        const stage = document.getElementById("preview-stage");
+        const area = document.getElementById("capture-area");
+        if (!stage || !area) return;
+
+        stage.style.transform = "scale(1)";
+        const contentWidth = stage.scrollWidth;
+        const contentHeight = stage.scrollHeight;
+        if (!contentWidth || !contentHeight) return;
+
+        const scaleX = area.clientWidth / contentWidth;
+        const scaleY = area.clientHeight / contentHeight;
+        const scale = Math.min(scaleX, scaleY, 1.2) * 0.68;
+        stage.style.transform = `scale(${Math.max(scale, 0.2)})`;
+      }
+
+      function adjustControlScale() {
+        const panel = document.querySelector(".control-panel");
+        const content = document.getElementById("control-content");
+        if (!panel || !content) return;
+
+        content.style.transform = "scale(1)";
+        content.style.width = "100%";
+        const contentWidth = content.scrollWidth;
+        const contentHeight = content.scrollHeight;
+        if (!contentWidth || !contentHeight) return;
+
+        const scaleX = panel.clientWidth / contentWidth;
+        const scaleY = panel.clientHeight / contentHeight;
+        const scale = Math.min(scaleX, scaleY, 1);
+        content.style.transform = `scale(${scale})`;
+        content.style.width = `${100 / scale}%`;
+      }
+
+      window.addEventListener("resize", () => {
+        adjustPreviewScale();
+        adjustControlScale();
+      });
 
       function selectPattern(url, element) {
         document
